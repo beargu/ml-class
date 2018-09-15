@@ -1,8 +1,9 @@
 import amazon
 import numpy as np
+from keras.preprocessing import sequence
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
-from keras.layers import Embedding, LSTM
+from keras.layers import Embedding, LSTM, GRU
 from keras.layers import Conv1D, Flatten, MaxPooling1D
 from keras.preprocessing import text
 import wandb
@@ -12,11 +13,12 @@ wandb.init()
 config = wandb.config
 config.vocab_size = 1000
 
-config.maxlen = 1000
-#config.batch_size = 32
-config.batch_size = 1000
+#config.maxlen = 1000
+config.maxlen = 500
+config.batch_size = 32
 config.embedding_dims = 50
-config.filters = 250
+#config.filters = 250
+config.filters = 128
 config.kernel_size = 3
 config.hidden_dims = 250
 config.epochs = 10
@@ -58,8 +60,8 @@ print(y_test[0:10])
 # try other models
 
 
-#X_train = sequence.pad_sequences(X_train, maxlen=config.maxlen)
-#X_test = sequence.pad_sequences(X_test, maxlen=config.maxlen)
+X_train = sequence.pad_sequences(X_train, maxlen=config.maxlen)
+X_test = sequence.pad_sequences(X_test, maxlen=config.maxlen)
 
 
 model = Sequential()
@@ -68,43 +70,21 @@ model.add(Embedding(config.vocab_size,
                     input_length=config.maxlen))
 model.add(Dropout(config.dropout_rate))
 
-#model.add(Conv1D(256, 
-#                 3,
-#                 input_shape=(25000,1000),
-#                 padding='valid',
-#                 activation='relu')) 
 
-model.add(Conv1D(32,
+
+model.add(Conv1D(config.filters,
                  config.kernel_size,
                  padding='valid',
                  activation='relu')) 
 model.add(MaxPooling1D(pool_size=2))
 model.add(Dropout(config.dropout_rate))
 
-#model.add(Conv1D(64,
-#                 config.kernel_size,
-#                 padding='valid',
-#                 activation='relu')) 
-#model.add(MaxPooling1D(pool_size=2))
-#model.add(Dropout(config.dropout_rate))
+model.add(GRU(config.hidden_dims, activation="sigmoid", dropout=0.2))
 
-#model.add(Conv1D(128,
-#                 config.kernel_size,
-#                 padding='valid',
-#                 activation='relu')) 
-#model.add(MaxPooling1D(pool_size=2))
-#model.add(Dropout(config.dropout_rate))
-
-model.add(Conv1D(256,
-                 config.kernel_size,
-                 padding='valid',
-                 activation='relu')) 
-model.add(MaxPooling1D(pool_size=2))
-model.add(Dropout(config.dropout_rate))
                     
-model.add(Flatten())
-model.add(Dense(config.hidden_dims, activation='relu'))
-model.add(Dropout(config.dropout_rate))
+#model.add(Flatten())
+#model.add(Dense(config.hidden_dims, activation='relu'))
+#model.add(Dropout(config.dropout_rate))
 
 model.add(Dense(1, activation='sigmoid'))
 

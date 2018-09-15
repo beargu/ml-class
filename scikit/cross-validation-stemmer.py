@@ -26,7 +26,12 @@ fixed_target = target[pd.notnull(text)]
 count_vect = CountVectorizer(tokenizer=tokenizer)
 count_vect.fit(fixed_text)
 
+print(count_vect.vocabulary
+
 counts = count_vect.transform(fixed_text)
+
+#print(counts)
+
 
 from sklearn.naive_bayes import MultinomialNB
 nb = MultinomialNB()

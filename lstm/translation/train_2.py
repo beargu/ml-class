@@ -23,10 +23,11 @@ import numpy as np
 wandb.init()
 config = wandb.config
 
-config.batch_size = 64  # Batch size for training.
-config.epochs = 5  # Number of epochs to train for.
+#config.batch_size = 64  # Batch size for training.
+config.batch_size = 128  # Batch size for training.
+config.epochs = 50  # Number of epochs to train for.
 config.latent_dim = 256  # Latent dimensionality of the encoding space.
-config.num_samples = 10000  # Number of samples to train on.
+config.num_samples = 20000  # Number of samples to train on.
 #config.data_path = 'deu.txt' # Path to the data txt file on disk.
 config.data_path = 'cmn.txt' # Path to the data txt file on disk. 
 
